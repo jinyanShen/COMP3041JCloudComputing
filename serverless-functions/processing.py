@@ -2,11 +2,11 @@ import json
 import re
 
 def handler(event, context):
-    # 解析传入的数据
+   
     body = json.loads(event.get('body', '{}'))
     data = body.get('data', {})
 
-    # 1. 检查必填字段
+
     required = ['title', 'description', 'location', 'date', 'organiser']
     for field in required:
         if field not in data or not data[field]:
@@ -20,7 +20,7 @@ def handler(event, context):
                 })
             }
 
-    # 2. 检查日期格式
+
     if not re.match(r'\d{4}-\d{2}-\d{2}', data['date']):
         return {
             'statusCode': 200,
@@ -32,7 +32,7 @@ def handler(event, context):
             })
         }
 
-    # 3. 检查描述长度
+
     if len(data['description']) < 40:
         return {
             'statusCode': 200,
@@ -44,7 +44,7 @@ def handler(event, context):
             })
         }
 
-    # 4. 分类逻辑
+
     text = (data.get('title', '') + ' ' + data.get('description', '')).lower()
 
     if any(k in text for k in ['career', 'internship', 'recruitment']):
