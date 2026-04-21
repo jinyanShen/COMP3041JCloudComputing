@@ -6,8 +6,8 @@ import requests
 app = Flask(__name__)
 
 def process_event(data):
-    """处理事件的逻辑"""
-    # 1. 检查必填字段
+    """The logic for handling events"""
+    # 1. Check the required fields
     required = ['title', 'description', 'location', 'date', 'organiser']
     for field in required:
         if field not in data or not data[field]:
@@ -18,7 +18,7 @@ def process_event(data):
                 'note': f'Missing required field: {field}'
             }
 
-    # 2. 检查日期格式
+    # 2. Check the date format
     if not re.match(r'\d{4}-\d{2}-\d{2}', data['date']):
         return {
             'status': 'NEEDS REVISION',
@@ -27,7 +27,7 @@ def process_event(data):
             'note': 'Invalid date format. Use YYYY-MM-DD.'
         }
 
-    # 3. 检查描述长度
+    # 3. Check the length of the description
     if len(data['description']) < 40:
         return {
             'status': 'NEEDS REVISION',
@@ -36,7 +36,7 @@ def process_event(data):
             'note': f'Description must be at least 40 characters. Current: {len(data["description"])}'
         }
 
-    # 4. 分类逻辑
+    # 4. Secretary
     text = (data.get('title', '') + ' ' + data.get('description', '')).lower()
 
     if any(k in text for k in ['career', 'internship', 'recruitment']):
@@ -57,19 +57,19 @@ def process_event(data):
 
 @app.route('/process', methods=['POST'])
 def process():
-    """模拟 Processing Function"""
+    """simulate Processing Function"""
     data = request.json
     result = process_event(data)
     return jsonify(result)
 
 @app.route('/update', methods=['POST'])
 def update():
-    """模拟 Result Update Function"""
+    """simulate Result Update Function"""
     data = request.json
     record_id = data.get('record_id')
     result = data.get('result', {})
 
-    # 调用 Data Service 更新
+    # Call the Data Service to update
     update_url = f"http://localhost:5001/update/{record_id}"
     try:
         response = requests.put(update_url, json=result)

@@ -51,7 +51,7 @@ def submit():
             try:
                 response_data = process_resp.json()
 
-                # 解析阿里云返回结构
+                # Analyze the return structure of Alibaba Cloud
                 if isinstance(response_data, dict) and 'body' in response_data:
                     result = json.loads(response_data['body'])
                 else:
@@ -83,7 +83,7 @@ def submit():
             except Exception as e:
                 print(f"[Workflow] Update failed: {e}")
 
-                # fallback：直接更新 Data Service
+                # fallback: Update the Data Service directly
                 requests.put(
                     f"{DATA_SERVICE_URL}/update/{record_id}",
                     json=result,
